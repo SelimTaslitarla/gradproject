@@ -210,7 +210,7 @@ body{display:flex;background:#eef1f8;}
 .footer{padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
   font-size:11px;color:#4a6a8a;letter-spacing:.5px;}
 
-.right{width:42%;background:linear-gradient(160deg,#f5f7fc,#eaecf5);
+.right{width:42%;background:linear-gradient(150deg,#1e3060 0%,#2a4a8a 50%,#1e3870 100%);
   display:flex;align-items:center;justify-content:center;
   padding:24px 40px;height:720px;overflow-y:auto;}
 .card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:32px 38px;
