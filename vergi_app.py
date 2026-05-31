@@ -1555,10 +1555,9 @@ with tab1:
                 _dilim_mod = "diger"
 
             if _dilim_mod == "sadece_sinir":
-                # Sadece sınırlar: eski ve yeni dilim göster, oran tek kolon
                 for i in range(k):
                     eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if np.isinf(tam_eski[i+1])
-                                   else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL")
+                                   else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL") if i+1 < len(tam_eski) else "—"
                     yeni_aralik = (f"{tam_yeni[i]:,.0f} TL ve üzeri" if np.isinf(tam_yeni[i+1])
                                    else f"{tam_yeni[i]:,.0f} – {tam_yeni[i+1]:,.0f} TL")
                     dilim_rows.append({
@@ -1568,11 +1567,13 @@ with tab1:
                         "Oran": f"%{opt_oranlar[i]*100:.0f}",
                     })
             else:
-                # Diger: eski dilim + eski oran + yeni dilim + yeni oran + fark
                 for i in range(k):
-                    eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if i < len(ESKI_SINIRLAR)+1 and np.isinf(tam_eski[i+1])
-                                   else (f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL"
-                                         if i < len(ESKI_SINIRLAR)+1 else "—"))
+                    # Eski aralık: sadece mevcut 5 dilim için, fazlası için — göster
+                    if i+1 < len(tam_eski):
+                        eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if np.isinf(tam_eski[i+1])
+                                       else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL")
+                    else:
+                        eski_aralik = "—"
                     yeni_aralik = (f"{tam_yeni[i]:,.0f} TL ve üzeri" if np.isinf(tam_yeni[i+1])
                                    else f"{tam_yeni[i]:,.0f} – {tam_yeni[i+1]:,.0f} TL")
                     eski_oran = f"%{MEVCUT_ORANLAR[i]*100:.0f}" if i < len(MEVCUT_ORANLAR) else "—"
