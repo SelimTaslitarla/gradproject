@@ -210,15 +210,9 @@ body{display:flex;background:#eef1f8;}
 .footer{padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
   font-size:11px;color:#4a6a8a;letter-spacing:.5px;}
 
-.right{width:42%;
-  background:linear-gradient(150deg,#1e3060 0%,#2a4a8a 50%,#1e3870 100%);
-  background-image:
-    linear-gradient(150deg,#1e3060 0%,#2a4a8a 50%,#1e3870 100%),
-    linear-gradient(rgba(212,175,55,.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(212,175,55,.06) 1px,transparent 1px);
-  background-size:100% 100%, 56px 56px, 56px 56px;
+.right{width:42%;background:linear-gradient(160deg,#f5f7fc,#eaecf5);
   display:flex;align-items:center;justify-content:center;
-  padding:24px 40px;height:720px;overflow-y:auto;position:relative;}
+  padding:24px 40px;height:720px;overflow-y:auto;}
 .card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:32px 38px;
   box-shadow:0 12px 60px rgba(20,40,90,.12),0 2px 8px rgba(20,40,90,.06);position:relative;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
@@ -300,25 +294,7 @@ select option{color:#0e1e40;}
 </div>
 
 <div class="right">
-  <div style="position:absolute;inset:0;pointer-events:none;
-    background-image:linear-gradient(rgba(212,175,55,.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(212,175,55,.06) 1px,transparent 1px);
-    background-size:56px 56px;"></div>
-  <div style="position:absolute;bottom:-60px;right:-60px;width:320px;height:320px;border-radius:50%;
-    background:radial-gradient(circle,rgba(212,175,55,.12) 0%,transparent 65%);pointer-events:none;"></div>
-  <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;
-    background:radial-gradient(circle,rgba(100,160,255,.12) 0%,transparent 65%);pointer-events:none;"></div>
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
-    <svg style="position:absolute;bottom:0;left:0;width:100%;height:75%;opacity:0.08;"
-      viewBox="0 0 400 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="0" y1="300" x2="400" y2="0" stroke="white" stroke-width="1" stroke-dasharray="8,6"/>
-      <path d="M0,300 C60,295 120,280 180,250 C240,220 300,175 360,120 C380,100 395,60 400,0"
-        fill="none" stroke="#e74c3c" stroke-width="3"/>
-      <path d="M0,300 C55,293 115,275 175,242 C235,209 298,162 358,106 C378,86 395,48 400,0"
-        fill="rgba(46,204,113,0.15)" stroke="#2ecc71" stroke-width="3"/>
-    </svg>
-  </div>
-  <div class="card" style="position:relative;z-index:1;">
+  <div class="card">
     <div class="tabs">
       <button class="tab-btn active" onclick="gosterPanel('giris',this)">Giriş Yap</button>
       <button class="tab-btn" onclick="gosterPanel('kayit',this)">Üye Ol</button>
