@@ -1,7 +1,7 @@
 streamlit
-plotly
-pandas
 numpy
+scipy
+pandas
+plotly
 matplotlib
 fpdf2
-scipy
