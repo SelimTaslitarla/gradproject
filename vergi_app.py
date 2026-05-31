@@ -188,140 +188,104 @@ body{display:flex;background:#eef1f8;}
   display:flex;flex-direction:column;justify-content:center;
   height:720px;
 }
-.grid{
-  position:absolute;inset:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(212,175,55,.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(212,175,55,.06) 1px,transparent 1px);
-  background-size:56px 56px;
-}
+.grid{position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(212,175,55,.06) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(212,175,55,.06) 1px,transparent 1px);
+  background-size:56px 56px;}
 .g1{position:absolute;top:-120px;left:-120px;width:420px;height:420px;border-radius:50%;
   background:radial-gradient(circle,rgba(212,175,55,.15) 0%,transparent 65%);pointer-events:none;}
 .g2{position:absolute;bottom:-60px;right:40px;width:320px;height:320px;border-radius:50%;
   background:radial-gradient(circle,rgba(100,160,255,.15) 0%,transparent 65%);pointer-events:none;}
-
 .inner{position:relative;z-index:1;width:100%;}
-.tag{font-size:10px;font-weight:600;letter-spacing:5px;color:#d4af37;
-  text-transform:uppercase;margin-bottom:16px;}
-.logo{font-family:'Playfair Display',serif;font-size:54px;font-weight:900;color:#fff;
-  line-height:1;letter-spacing:-2px;margin-bottom:10px;}
+.logo{font-family:'Playfair Display',serif;font-size:58px;font-weight:900;color:#fff;
+  line-height:1;letter-spacing:-2px;margin-bottom:12px;}
 .logo span{color:#d4af37;}
-.tagline{font-size:15px;color:#b0cce8;font-weight:300;margin-bottom:22px;line-height:1.6;}
-.bar{width:52px;height:2px;background:linear-gradient(90deg,#d4af37,transparent);margin-bottom:28px;}
-
-/* Lorenz - merkeze büyük */
-
-
-/* Özellikler - yatay 2x2 grid */
+.tagline{font-size:15px;color:#b0cce8;font-weight:300;margin-bottom:22px;line-height:1.5;}
+.bar{width:52px;height:2px;background:linear-gradient(90deg,#d4af37,transparent);margin-bottom:24px;}
 .feats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.feat{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:10px;padding:14px 16px;
-}
-.feat .ico{font-size:20px;margin-bottom:8px;}
+.feat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:14px 16px;}
 .feat h4{color:#e8f0fc;font-size:13px;font-weight:500;margin-bottom:4px;}
 .feat p{color:#7a9ec0;font-size:11.5px;line-height:1.5;}
+.footer{padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:11px;color:#4a6a8a;letter-spacing:.5px;}
 
-.footer{
-  padding-top:16px;
-  border-top:1px solid rgba(255,255,255,.08);
-  font-size:11px;color:#4a6a8a;letter-spacing:.5px;
-}
-
-.right{
-  width:42%;
-  background:linear-gradient(160deg,#f5f7fc,#eaecf5);
+.right{width:42%;background:linear-gradient(160deg,#f5f7fc,#eaecf5);
   display:flex;align-items:center;justify-content:center;
-  padding:40px 48px;height:720px;position:relative;
-}
-.card{
-  width:100%;max-width:380px;
-  background:#fff;border-radius:20px;padding:48px 44px;
-  box-shadow:0 12px 60px rgba(20,40,90,.12),0 2px 8px rgba(20,40,90,.06);
-  position:relative;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#d4af37,#f5d06a,#d4af37);
-  border-radius:20px 20px 0 0;
-}
-.card h2{
-  font-family:'Playfair Display',serif;font-size:28px;
-  font-weight:700;color:#0e1e40;margin-bottom:6px;
-}
-.card .sub{font-size:13px;color:#90a8c0;margin-bottom:36px;}
+  padding:24px 40px;height:720px;overflow-y:auto;}
+.card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:32px 38px;
+  box-shadow:0 12px 60px rgba(20,40,90,.12),0 2px 8px rgba(20,40,90,.06);position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#d4af37,#f5d06a,#d4af37);border-radius:20px 20px 0 0;}
+
+/* Tab switcher */
+.tabs{display:flex;background:#f0f3fa;border-radius:10px;padding:4px;margin-bottom:20px;}
+.tab-btn{flex:1;padding:9px;border:none;background:transparent;border-radius:7px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  color:#6080a0;cursor:pointer;transition:all .2s;}
+.tab-btn.active{background:#fff;color:#1e3060;box-shadow:0 1px 6px rgba(20,40,90,.12);font-weight:600;}
+.panel{display:none;} .panel.active{display:block;}
+
+.card h2{font-family:'Playfair Display',serif;font-size:24px;
+  font-weight:700;color:#0e1e40;margin-bottom:4px;}
+.card .sub{font-size:12px;color:#90a8c0;margin-bottom:16px;}
 .lbl{display:block;font-size:10px;font-weight:600;letter-spacing:2px;
-  color:#6080a0;text-transform:uppercase;margin-bottom:7px;margin-top:20px;}
-input{
-  width:100%;padding:13px 16px;
-  border:1.5px solid #dde4f0;border-radius:10px;
-  font-size:14px;color:#0e1e40;font-family:'DM Sans',sans-serif;
-  outline:none;background:#f8fafd;
-  transition:border-color .2s,box-shadow .2s;
-}
-input:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.13);}
-.btn{
-  margin-top:28px;width:100%;padding:15px;
+  color:#6080a0;text-transform:uppercase;margin-bottom:5px;margin-top:12px;}
+input,select{width:100%;padding:11px 14px;border:1.5px solid #dde4f0;border-radius:10px;
+  font-size:13px;color:#0e1e40;font-family:'DM Sans',sans-serif;
+  outline:none;background:#f8fafd;transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;}
+input:focus,select:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.13);}
+.btn{margin-top:16px;width:100%;padding:13px;
   background:linear-gradient(135deg,#1e3060,#2a4a8a);
-  color:#fff;border:none;border-radius:10px;
-  font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;
-  letter-spacing:.4px;cursor:pointer;transition:all .25s;
-  box-shadow:0 4px 15px rgba(20,40,90,.2);
-}
-.btn:hover{background:linear-gradient(135deg,#2a4a8a,#3a6aaa);
-  transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,40,90,.3);}
-.err{color:#e53e3e;font-size:12px;margin-top:10px;display:none;padding:8px 12px;
+  color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:500;
+  font-family:'DM Sans',sans-serif;letter-spacing:.4px;cursor:pointer;
+  transition:all .25s;box-shadow:0 4px 15px rgba(20,40,90,.2);}
+.btn:hover{background:linear-gradient(135deg,#2a4a8a,#3a6aaa);transform:translateY(-1px);}
+.err{color:#c0392b;font-size:12px;margin-top:8px;display:none;padding:8px 12px;
   background:#fff5f5;border-radius:6px;border-left:3px solid #e53e3e;}
-.hint{text-align:center;font-size:11px;color:#b0c0d4;margin-top:18px;}
+.ok{color:#1a7a4a;font-size:12px;margin-top:8px;display:none;padding:8px 12px;
+  background:#f0faf5;border-radius:6px;border-left:3px solid #27ae60;}
+.hint{text-align:center;font-size:11px;color:#b0c0d4;margin-top:12px;}
+select option{color:#0e1e40;}
 </style>
 </head>
 <body>
 
 <div class="left">
   <div class="grid"></div><div class="g1"></div><div class="g2"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+    <svg style="position:absolute;bottom:0;left:0;width:100%;height:75%;opacity:0.08;"
+      viewBox="0 0 400 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="300" x2="400" y2="0" stroke="white" stroke-width="1" stroke-dasharray="8,6"/>
+      <path d="M0,300 C60,295 120,280 180,250 C240,220 300,175 360,120 C380,100 395,60 400,0"
+        fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <path d="M0,300 C55,293 115,275 175,242 C235,209 298,162 358,106 C378,86 395,48 400,0"
+        fill="rgba(46,204,113,0.15)" stroke="#2ecc71" stroke-width="3"/>
+    </svg>
+  </div>
   <div class="inner">
-    <div class="tag">Politika Zekası Platformu</div>
     <div class="logo">Tax<span>Arch</span></div>
-    <div class="tagline">Türkiye için Optimal Vergi Sistemi<br>Tasarım ve Analiz Platformu</div>
+    <div class="tagline">Türkiye için Optimal Vergi Sistemi Tasarım ve Analiz Platformu</div>
     <div class="bar"></div>
-
-    <!-- Lorenz arka plan dekoratif -->
-    <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
-      <svg style="position:absolute;bottom:0;left:0;width:100%;height:75%;opacity:0.08;"
-        viewBox="0 0 400 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="300" x2="400" y2="0" stroke="white" stroke-width="1" stroke-dasharray="8,6"/>
-        <path d="M0,300 C60,295 120,280 180,250 C240,220 300,175 360,120 C380,100 395,60 400,0"
-          fill="none" stroke="#e74c3c" stroke-width="3"/>
-        <path d="M0,300 C55,293 115,275 175,242 C235,209 298,162 358,106 C378,86 395,48 400,0"
-          fill="rgba(46,204,113,0.15)" stroke="#2ecc71" stroke-width="3"/>
-      </svg>
-    </div>
-
-    <!-- 2x2 özellik grid -->
     <div class="feats">
       <div class="feat">
-        <div class="ico">📉</div>
         <h4>Gini Optimizasyonu</h4>
         <p>Gelir eşitsizliğini minimize eden optimal vergi yapısını tasarlayın.</p>
       </div>
       <div class="feat">
-        <div class="ico">⚙️</div>
         <h4>7 Senaryo</h4>
         <p>Oran, sınır ve dilim sayısını bağımsız veya birlikte optimize edin.</p>
       </div>
       <div class="feat">
-        <div class="ico">🧠</div>
-        <h4>Politika Zekası</h4>
-        <p>Reform tipini tespit eder, akademik yorumlar üretir.</p>
+        <h4>Duyarlılık Analizi</h4>
+        <p>Parametre değişimlerinin Gini üzerindeki etkisini görselleştirin.</p>
       </div>
       <div class="feat">
-        <div class="ico">📊</div>
         <h4>Hane Analizi</h4>
         <p>Kendi hane verinizle kişiselleştirilmiş analiz yapın.</p>
       </div>
     </div>
-
     <div class="footer">
       ISL4902E &nbsp;·&nbsp; İTÜ İşletme Mühendisliği &nbsp;·&nbsp; 2026
       &nbsp;|&nbsp; Selim Taşlıtarla &amp; Emir Miraç Yaman
@@ -331,51 +295,90 @@ input:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.13);}
 
 <div class="right">
   <div class="card">
-    <h2>Hoş Geldiniz</h2>
-    <div class="sub">Devam etmek için giriş yapın</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="gosterPanel('giris',this)">Giriş Yap</button>
+      <button class="tab-btn" onclick="gosterPanel('kayit',this)">Üye Ol</button>
+    </div>
 
-    <label class="lbl">E-posta</label>
-    <input type="text" id="em" placeholder="ornek@itu.edu.tr"
-      onkeydown="if(event.key==='Enter')document.getElementById('pw').focus()">
+    <!-- GİRİŞ PANELİ -->
+    <div class="panel active" id="panel-giris">
+      <h2>Hoş Geldiniz</h2>
+      <div class="sub">Devam etmek için giriş yapın</div>
+      <label class="lbl">E-posta</label>
+      <input type="text" id="g-em" placeholder="ornek@itu.edu.tr"
+        onkeydown="if(event.key==='Enter')document.getElementById('g-pw').focus()">
+      <label class="lbl">Şifre</label>
+      <input type="password" id="g-pw" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')giris()">
+      <div class="err" id="g-err"></div>
+      <button class="btn" onclick="giris()">Sisteme Giriş Yap &rarr;</button>
+      <div class="hint">Demo: demo@demo.com &nbsp;/&nbsp; demo123</div>
+    </div>
 
-    <label class="lbl">Şifre</label>
-    <input type="password" id="pw" placeholder="••••••••"
-      onkeydown="if(event.key==='Enter')giris()">
-
-    <div class="err" id="err"></div>
-    <button class="btn" onclick="giris()">Sisteme Giriş Yap &rarr;</button>
-    <div class="hint">Erişim için sistem yöneticinizle iletişime geçin.</div>
+    <!-- KAYIT PANELİ -->
+    <div class="panel" id="panel-kayit">
+      <h2>Üye Ol</h2>
+      <div class="sub">Yeni hesabınızı oluşturun</div>
+      <label class="lbl">Ad Soyad</label>
+      <input type="text" id="k-ad" placeholder="Ad Soyad">
+      <label class="lbl">Kurum</label>
+      <input type="text" id="k-kurum" placeholder="İTÜ / Hazine / vb.">
+      <label class="lbl">E-posta</label>
+      <input type="text" id="k-em" placeholder="ornek@itu.edu.tr">
+      <label class="lbl">Şifre</label>
+      <input type="password" id="k-pw" placeholder="En az 6 karakter">
+      <label class="lbl">Şifre Tekrar</label>
+      <input type="password" id="k-pw2" placeholder="••••••••">
+      <label class="lbl">Kullanım Amacı</label>
+      <input type="text" id="k-amac" placeholder="Akademik araştırma, politika analizi...">
+      <div class="err" id="k-err"></div>
+      <div class="ok" id="k-ok"></div>
+      <button class="btn" onclick="kayitOl()">Hesap Oluştur &rarr;</button>
+    </div>
   </div>
 </div>
 
 <script>
-const db={
-  "admin@itu.edu.tr":"admin123",
-  "hazine@gov.tr":"hazine2026",
-  "gib@gov.tr":"gib2026",
-  "demo@demo.com":"demo123"
-};
+const sabit={"admin@itu.edu.tr":"admin123","hazine@gov.tr":"hazine2026","gib@gov.tr":"gib2026","demo@demo.com":"demo123"};
+
+function gosterPanel(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
 function giris(){
-  const em=document.getElementById("em").value.trim();
-  const pw=document.getElementById("pw").value;
-  const err=document.getElementById("err");
-  if(!em||!pw){
-    err.style.display="block";
-    err.textContent="Lütfen tüm alanları doldurun.";
-    return;
-  }
-  if(db[em]&&db[em]===pw){
-    // Streamlit'e mesaj gönder
-    window.parent.postMessage({type:"taxarch_giris",email:em},"*");
-    // Alternatif: session storage
-    window.parent.sessionStorage.setItem("taxarch_user", em);
-    window.parent.sessionStorage.setItem("taxarch_ok", "1");
-    // URL parametresi ile Streamlit'i tetikle
-    window.parent.location.href = window.parent.location.href.split('?')[0] + '?user=' + encodeURIComponent(em) + '&ok=1';
+  const em=document.getElementById("g-em").value.trim().toLowerCase();
+  const pw=document.getElementById("g-pw").value;
+  const err=document.getElementById("g-err");
+  err.style.display="none";
+  if(!em||!pw){err.textContent="Lütfen tüm alanları doldurun.";err.style.display="block";return;}
+  if(sabit[em]&&sabit[em]===pw){
+    window.parent.location.href=window.parent.location.href.split('?')[0]+'?user='+encodeURIComponent(em)+'&ok=1';
   } else {
-    err.style.display="block";
-    err.textContent="Geçersiz e-posta veya şifre.";
+    window.parent.location.href=window.parent.location.href.split('?')[0]+'?user='+encodeURIComponent(em)+'&pw='+encodeURIComponent(pw)+'&ok=1';
   }
+}
+
+function kayitOl(){
+  const ad=document.getElementById("k-ad").value.trim();
+  const kurum=document.getElementById("k-kurum").value.trim();
+  const em=document.getElementById("k-em").value.trim().toLowerCase();
+  const pw=document.getElementById("k-pw").value;
+  const pw2=document.getElementById("k-pw2").value;
+  const amac=document.getElementById("k-amac").value.trim();
+  const err=document.getElementById("k-err");
+  const ok=document.getElementById("k-ok");
+  err.style.display="none"; ok.style.display="none";
+  if(!ad||!em||!pw||!pw2||!amac){err.textContent="Lütfen tüm alanları doldurun.";err.style.display="block";return;}
+  if(pw.length<6){err.textContent="Şifre en az 6 karakter olmalıdır.";err.style.display="block";return;}
+  if(pw!==pw2){err.textContent="Şifreler eşleşmiyor.";err.style.display="block";return;}
+  if(!em.includes("@")){err.textContent="Geçerli bir e-posta girin.";err.style.display="block";return;}
+  if(sabit[em]){err.textContent="Bu e-posta kullanılamaz.";err.style.display="block";return;}
+  window.parent.location.href=window.parent.location.href.split('?')[0]
+    +'?register=1&ad='+encodeURIComponent(ad)+'&kurum='+encodeURIComponent(kurum)
+    +'&user='+encodeURIComponent(em)+'&pw='+encodeURIComponent(pw)+'&amac='+encodeURIComponent(amac);
 }
 </script>
 </body></html>"""
@@ -483,7 +486,7 @@ with st.expander("Bu araç hakkında — Amaç, Kapsam ve Kullanım Kılavuzu"):
     Türkiye'de gelir eşitsizliği önemli bir sorun olmaya devam etmektedir.
     Mevcut gelir vergisi sistemi, artan oranlı yapısına rağmen eşitsizliği azaltmada yetersiz kalmaktadır.
 
-    Bu araç, **İstanbul Teknik Üniversitesi İşletme Mühendisliği** bitirme projesi kapsamında geliştirilmiştir.
+    Bu araç, **İstanbul Teknik Üniversitesi Endüstri Mühendisliği** bitirme projesi kapsamında geliştirilmiştir.
     Temel amacı, politika yapıcılara farklı vergi yapılarının gelir dağılımı üzerindeki etkisini
     anlık olarak görebilecekleri bir **karar destek aracı** sunmaktır.
 
@@ -611,7 +614,7 @@ with st.sidebar:
                 padding:24px 16px 18px 16px;
                 border-bottom:1px solid rgba(212,175,55,0.3);
                 margin-bottom:12px; margin-left:-16px; margin-right:-16px; margin-top:-16px;">
-      <div style="font-family:'Playfair Display',serif; font-size:55px; font-weight:900;
+      <div style="font-family:'Playfair Display',serif; font-size:42px; font-weight:900;
                   line-height:1; letter-spacing:-2px; color:#ffffff;">
         Tax<span class="taxarch-logo-gold" style="color:#d4af37; -webkit-text-fill-color:#d4af37;">Arch</span>
       </div>
