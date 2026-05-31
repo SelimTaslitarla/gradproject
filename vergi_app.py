@@ -483,7 +483,7 @@ with st.expander("Bu araç hakkında — Amaç, Kapsam ve Kullanım Kılavuzu"):
     Türkiye'de gelir eşitsizliği önemli bir sorun olmaya devam etmektedir.
     Mevcut gelir vergisi sistemi, artan oranlı yapısına rağmen eşitsizliği azaltmada yetersiz kalmaktadır.
 
-    Bu araç, **İstanbul Teknik Üniversitesi Endüstri Mühendisliği** bitirme projesi kapsamında geliştirilmiştir.
+    Bu araç, **İstanbul Teknik Üniversitesi İşletme Mühendisliği** bitirme projesi kapsamında geliştirilmiştir.
     Temel amacı, politika yapıcılara farklı vergi yapılarının gelir dağılımı üzerindeki etkisini
     anlık olarak görebilecekleri bir **karar destek aracı** sunmaktır.
 
