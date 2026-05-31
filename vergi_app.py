@@ -611,7 +611,7 @@ with st.sidebar:
                 padding:24px 16px 18px 16px;
                 border-bottom:1px solid rgba(212,175,55,0.3);
                 margin-bottom:12px; margin-left:-16px; margin-right:-16px; margin-top:-16px;">
-      <div style="font-family:'Playfair Display',serif; font-size:42px; font-weight:900;
+      <div style="font-family:'Playfair Display',serif; font-size:60px; font-weight:900;
                   line-height:1; letter-spacing:-2px; color:#ffffff;">
         Tax<span class="taxarch-logo-gold" style="color:#d4af37; -webkit-text-fill-color:#d4af37;">Arch</span>
       </div>
