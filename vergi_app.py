@@ -660,7 +660,7 @@ with st.sidebar:
     else:
         dilim_sayisi = 5
 
-    if opt_oranlar_sec or opt_dilim_sec:
+    if opt_oranlar_sec:
         st.subheader("Oran Kısıtları")
         min_oran      = st.slider("Min oran (%)", 0, 30, 10) / 100
         max_oran      = st.slider("Max oran (%)", 10, 80, 45) / 100
@@ -670,7 +670,7 @@ with st.sidebar:
     else:
         min_oran = 0.10; max_oran = 0.45; min_oran_fark = 0.03; max_oran_fark = 0.13
 
-    if opt_sinirlar_sec or opt_dilim_sec:
+    if opt_sinirlar_sec:
         st.subheader("Dilim Sınırı Kısıtları")
         min_sinir      = st.number_input("Min dilim sınırı (TL)", min_value=0,
                                           max_value=500000, value=50000, step=10000)
@@ -682,6 +682,10 @@ with st.sidebar:
         st.markdown("---")
     else:
         min_sinir = 50000; son_dilim_min = 2000000; min_sinir_fark = 50000; min_sinir_fark_pct = 10
+
+    # opt_dilim_sec için de sınır kısıt varsayılanları gerekebilir
+    if opt_dilim_sec and not opt_sinirlar_sec:
+        min_sinir_fark_pct = 10
 
     st.markdown("---")
     st.subheader("Bütçe Toleransı")
@@ -1511,8 +1515,6 @@ with tab1:
         )
 
         _butce_pct = (opt_ort - baseline_ort) / baseline_ort * 100
-        _butce_label = f"{_butce_pct:+.2f}%"
-        _butce_delta = "vergi geliri azaldı" if _butce_pct < -0.1 else ("vergi geliri arttı" if _butce_pct > 0.1 else "bütçe tarafsız")
 
         st.subheader("Sonuçlar")
         col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -1522,18 +1524,15 @@ with tab1:
             st.metric("Optimal Gini", f"{opt_gini:.4f}",
                       delta=f"{-iyilesme:.4f}", delta_color="inverse")
         with col3:
-            _gini_degisim = opt_gini - baseline_gini  # negatif = iyileşme
-            st.metric("Gini Değişimi", f"{_gini_degisim:+.4f}",
-                      delta=f"{(_gini_degisim/baseline_gini)*100:+.2f}%",
-                      delta_color="inverse")
+            _gini_pct = (opt_gini - baseline_gini) / baseline_gini * 100
+            st.metric("Gini Değişimi", f"{_gini_pct:+.2f}%")
         with col4:
             st.metric("Mevcut Ort. Vergi", f"{baseline_ort:,.0f} TL")
         with col5:
             st.metric("Yeni Ort. Vergi", f"{opt_ort:,.0f} TL",
                       delta=f"{opt_ort - baseline_ort:+,.0f} TL")
         with col6:
-            st.metric("Bütçe Değişimi", _butce_label, delta=_butce_delta,
-                      delta_color="normal")
+            st.metric("Bütçe Değişimi", f"{_butce_pct:+.2f}%")
 
         st.markdown("---")
         col_tablo, col_grafik = st.columns([1, 1])
