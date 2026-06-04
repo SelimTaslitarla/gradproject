@@ -609,6 +609,18 @@ with st.sidebar:
     [data-testid="stSlider"] > div > div > div > div {
         background: #d4af37 !important;
     }
+    /* Dataframe ilk kolon (Dilim / Grup) ortala */
+    [data-testid="stDataFrame"] td:first-child,
+    [data-testid="stDataFrame"] th:first-child {
+        text-align: center !important;
+        justify-content: center !important;
+    }
+    [data-testid="stDataFrame"] td:first-child > div,
+    [data-testid="stDataFrame"] th:first-child > div {
+        text-align: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
     </style>
     <div style="background:linear-gradient(180deg,#1e3060,#162548);
                 padding:24px 16px 18px 16px;
@@ -679,16 +691,12 @@ with st.sidebar:
                                           max_value=500000, value=50000, step=10000)
         son_dilim_min  = st.number_input("Son dilim minimum sınırı (TL)", min_value=100000,
                                           max_value=20000000, value=2000000, step=500000)
-        min_sinir_fark_pct = st.slider("Sınırlar arası min fark (önceki dilimin %'si)", 0, 50, 10)
-        min_sinir_fark = None  # yüzde tabanlı, optimizasyonda hesaplanır
-        st.caption("Her sınır bir öncekinin en az bu kadar üzerinde olacak.")
+        min_sinir_fark = st.number_input("Dilimler arası min fark (TL)", min_value=0,
+                                          max_value=1000000, value=50000, step=10000)
+        min_sinir_fark_pct = 10  # artık kullanılmıyor
         st.markdown("---")
     else:
         min_sinir = 50000; son_dilim_min = 2000000; min_sinir_fark = 50000; min_sinir_fark_pct = 10
-
-    # opt_dilim_sec için de sınır kısıt varsayılanları gerekebilir
-    if opt_dilim_sec and not opt_sinirlar_sec:
-        min_sinir_fark_pct = 10
 
     st.markdown("---")
     st.subheader("Bütçe Toleransı")
@@ -1472,10 +1480,6 @@ with tab1:
             st.stop()
 
         t0 = time.time()
-        # Yüzde tabanlı sınır farkı: her sınır için önceki sınırın %'si kadar boşluk
-        if min_sinir_fark is None:
-            # İlk dilim için min_sinir'in yüzdesi; sonraki dilimler optimizasyonda dinamik hesaplanır
-            min_sinir_fark = int(min_sinir * min_sinir_fark_pct / 100) if min_sinir > 0 else 10000
         with st.spinner("Optimizasyon çalışıyor, lütfen bekleyin..."):
             opt_oranlar, opt_sinirlar = calistir_optimizasyon_v2(
                 opt_oranlar_sec, opt_sinirlar_sec, opt_dilim_sec,
