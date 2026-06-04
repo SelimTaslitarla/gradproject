@@ -43,25 +43,9 @@ def db_olustur():
             sifre_hash TEXT NOT NULL,
             ad_soyad TEXT,
             kurum TEXT,
-            kullanim_amaci TEXT,
-            kayit_tarihi TEXT NOT NULL,
-            onay_durumu TEXT DEFAULT 'bekliyor'
+            kayit_tarihi TEXT NOT NULL
         )
     """)
-    # Migration: yeni kolonları ekle
-    try:
-        c.execute("ALTER TABLE kullanicilar ADD COLUMN kullanim_amaci TEXT")
-    except: pass
-    try:
-        c.execute("ALTER TABLE kullanicilar ADD COLUMN onay_durumu TEXT DEFAULT 'bekliyor'")
-    except: pass
-    # Eski kayıtları (onay_durumu NULL veya boş) ve analizlerini sil
-    try:
-        c.execute("""DELETE FROM analiz_gecmisi WHERE kullanici_id IN (
-            SELECT id FROM kullanicilar WHERE onay_durumu IS NULL OR onay_durumu=''
-        )""")
-        c.execute("DELETE FROM kullanicilar WHERE onay_durumu IS NULL OR onay_durumu=''")
-    except: pass
     c.execute("""
         CREATE TABLE IF NOT EXISTS analiz_gecmisi (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,16 +67,14 @@ def db_olustur():
 def sifre_hashle(sifre):
     return hashlib.sha256(sifre.encode()).hexdigest()
 
-def kullanici_kaydet(eposta, sifre, ad_soyad="", kurum="", kullanim_amaci=""):
+def kullanici_kaydet(eposta, sifre, ad_soyad="", kurum=""):
     try:
         conn = db_baglanti()
         c = conn.cursor()
-        c.execute("""INSERT INTO kullanicilar
-                     (eposta, sifre_hash, ad_soyad, kurum, kullanim_amaci, kayit_tarihi, onay_durumu)
-                     VALUES (?, ?, ?, ?, ?, ?, 'bekliyor')""",
+        c.execute("""INSERT INTO kullanicilar (eposta, sifre_hash, ad_soyad, kurum, kayit_tarihi)
+                     VALUES (?, ?, ?, ?, ?)""",
                   (eposta.lower().strip(), sifre_hashle(sifre),
-                   ad_soyad, kurum, kullanim_amaci,
-                   datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                   ad_soyad, kurum, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         conn.commit()
         conn.close()
         return True, "Kayıt başarılı."
@@ -115,64 +97,15 @@ def kullanici_dogrula(eposta, sifre):
     try:
         conn = db_baglanti()
         c = conn.cursor()
-        c.execute("SELECT id, onay_durumu FROM kullanicilar WHERE eposta=? AND sifre_hash=?",
+        c.execute("SELECT id FROM kullanicilar WHERE eposta=? AND sifre_hash=?",
                   (eposta.lower().strip(), sifre_hashle(sifre)))
         row = c.fetchone()
         conn.close()
         if row:
-            kid, onay = row
-            if onay == "onaylandi":
-                return True, kid
-            elif onay == "bekliyor":
-                return False, "BEKLIYOR"
-            elif onay == "askiya_alindi":
-                return False, "ASKIYA_ALINDI"
-            else:
-                return False, "REDDEDILDI"
+            return True, row[0]
         return False, None
     except:
         return False, None
-
-
-def admin_kullanicilari_getir():
-    try:
-        conn = db_baglanti()
-        c = conn.cursor()
-        c.execute("""SELECT id, eposta, ad_soyad, kurum, kullanim_amaci,
-                            kayit_tarihi, onay_durumu
-                     FROM kullanicilar ORDER BY kayit_tarihi DESC""")
-        rows = c.fetchall()
-        conn.close()
-        return rows
-    except:
-        return []
-
-def admin_onay_guncelle(kullanici_id, yeni_durum):
-    try:
-        conn = db_baglanti()
-        c = conn.cursor()
-        c.execute("UPDATE kullanicilar SET onay_durumu=? WHERE id=?",
-                  (yeni_durum, kullanici_id))
-        conn.commit()
-        conn.close()
-        return True
-    except:
-        return False
-
-def admin_analizleri_getir():
-    try:
-        conn = db_baglanti()
-        c = conn.cursor()
-        c.execute("""SELECT ag.tarih, k.eposta, k.ad_soyad, ag.senaryo,
-                            ag.opt_gini, ag.baseline_gini, ag.iyilesme_pct
-                     FROM analiz_gecmisi ag
-                     LEFT JOIN kullanicilar k ON ag.kullanici_id = k.id
-                     ORDER BY ag.tarih DESC LIMIT 100""")
-        rows = c.fetchall()
-        conn.close()
-        return rows
-    except:
-        return []
 
 def analiz_kaydet(kullanici_id, senaryo, opt_gini, baseline_gini,
                   opt_oranlar, opt_sinirlar, parametreler):
@@ -545,173 +478,6 @@ function kayitOl(){
     st.stop()
 
 # Giriş yapıldıysa devam et
-
-# ── ADMİN PANELİ ─────────────────────────────────────────────────────────
-ADMIN_MAIL = "admin@itu.edu.tr"
-
-if st.session_state.get("giris_yapildi") and st.session_state.get("kullanici") == ADMIN_MAIL:
-    st.set_page_config(page_title="TaxArch Admin", layout="wide") if False else None
-
-    st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
-    [data-testid="stHeader"]{display:none!important;}
-    section[data-testid="stSidebar"]{display:none!important;}
-    .block-container{padding:2rem 3rem!important;}
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Admin üst bar
-    col_logo, col_cikis = st.columns([8,1])
-    with col_logo:
-        st.markdown("""
-        <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;
-                    color:#1e3060;line-height:1;margin-bottom:4px;">
-          Tax<span style="color:#d4af37;">Arch</span>
-          <span style="font-size:14px;font-weight:400;color:#888;margin-left:12px;
-                       font-family:'DM Sans',sans-serif;">Admin Paneli</span>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_cikis:
-        if st.button("Çıkış", key="admin_cikis"):
-            st.session_state.giris_yapildi = False
-            st.session_state.kullanici = ""
-            st.rerun()
-
-    st.markdown("---")
-
-    adm_tab1, adm_tab2, adm_tab3 = st.tabs(["Onay Bekleyenler", "Tüm Üyeler", "Analiz Geçmişi"])
-
-    kullanicilar = admin_kullanicilari_getir()
-
-    with adm_tab1:
-        st.subheader("Onay Bekleyen Üyeler")
-        bekleyenler = [k for k in kullanicilar if k[6] == "bekliyor"]
-        if not bekleyenler:
-            st.info("Onay bekleyen üye yok.")
-        else:
-            for k in bekleyenler:
-                kid, eposta, ad, kurum, amac, tarih, durum = k
-                with st.container():
-                    st.markdown(f"""
-                    <div style="border:1px solid #e0e0e0;border-radius:10px;
-                                padding:16px 20px;margin-bottom:12px;background:#fafafa;">
-                      <div style="font-size:16px;font-weight:600;color:#1e3060;">{ad or "—"}</div>
-                      <div style="font-size:13px;color:#555;margin-top:2px;">
-                        {eposta} &nbsp;·&nbsp; {kurum or "—"}
-                      </div>
-                      <div style="font-size:12px;color:#888;margin-top:4px;">
-                        Kullanım amacı: {amac or "—"} &nbsp;·&nbsp; Kayıt: {tarih}
-                      </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    bc1, bc2, bc3 = st.columns([2,2,8])
-                    with bc1:
-                        if st.button("Onayla", key=f"onayla_{kid}", type="primary"):
-                            admin_onay_guncelle(kid, "onaylandi")
-                            st.success(f"{eposta} onaylandı.")
-                            st.rerun()
-                    with bc2:
-                        if st.button("Reddet", key=f"reddet_{kid}"):
-                            admin_onay_guncelle(kid, "reddedildi")
-                            st.warning(f"{eposta} reddedildi.")
-                            st.rerun()
-
-    with adm_tab2:
-        st.subheader("Tüm Üyeler")
-        if not kullanicilar:
-            st.info("Kayıtlı üye yok.")
-        else:
-            col_toplu1, col_toplu2, col_toplu3 = st.columns([2,2,8])
-            with col_toplu1:
-                if st.button("Tümünü Onayla", type="primary", key="toplu_onayla"):
-                    conn = db_baglanti()
-                    conn.execute("UPDATE kullanicilar SET onay_durumu='onaylandi' WHERE onay_durumu='bekliyor'")
-                    conn.commit(); conn.close()
-                    st.success("Tüm bekleyen üyeler onaylandı.")
-                    st.rerun()
-            with col_toplu2:
-                if st.button("Tümünü Sil", key="toplu_sil"):
-                    conn = db_baglanti()
-                    conn.execute("""DELETE FROM analiz_gecmisi WHERE kullanici_id IN (
-                        SELECT id FROM kullanicilar WHERE onay_durumu='bekliyor')""")
-                    conn.execute("DELETE FROM kullanicilar WHERE onay_durumu='bekliyor'")
-                    conn.commit(); conn.close()
-                    st.warning("Tüm bekleyen üyeler silindi.")
-                    st.rerun()
-            st.markdown("---")
-            durum_renk = {
-                "onaylandi":    ("#d4edda", "#155724", "Onaylı"),
-                "bekliyor":     ("#fff3cd", "#856404", "Bekliyor"),
-                "askiya_alindi":("#f8d7da", "#721c24", "Askıya Alındı"),
-                "reddedildi":   ("#f8d7da", "#721c24", "Reddedildi"),
-            }
-            for k in kullanicilar:
-                kid, eposta, ad, kurum, amac, tarih, durum = k
-                bg, fg, etiket = durum_renk.get(durum, ("#f0f0f0","#333","Bilinmiyor"))
-                col_info, col_durum, col_btn = st.columns([6,2,2])
-                with col_info:
-                    st.markdown(f"""
-                    <div style="padding:10px 0;">
-                      <div style="font-weight:600;color:#1e3060;">{ad or "—"} &nbsp;
-                        <span style="font-weight:400;color:#555;font-size:13px;">{eposta}</span>
-                      </div>
-                      <div style="font-size:12px;color:#888;">
-                        {kurum or "—"} &nbsp;·&nbsp; {amac or "—"} &nbsp;·&nbsp; {tarih}
-                      </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                with col_durum:
-                    st.markdown(f"""
-                    <div style="margin-top:10px;">
-                      <span style="background:{bg};color:{fg};padding:4px 10px;
-                                   border-radius:12px;font-size:12px;font-weight:600;">
-                        {etiket}
-                      </span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                with col_btn:
-                    b1, b2 = st.columns(2)
-                    with b1:
-                        if durum == "onaylandi":
-                            if st.button("Askıya Al", key=f"askiya_{kid}"):
-                                admin_onay_guncelle(kid, "askiya_alindi")
-                                st.rerun()
-                        elif durum in ("bekliyor", "askiya_alindi", "reddedildi"):
-                            if st.button("Onayla", key=f"onayla2_{kid}", type="primary"):
-                                admin_onay_guncelle(kid, "onaylandi")
-                                st.rerun()
-                    with b2:
-                        if st.button("Sil", key=f"sil_{kid}"):
-                            conn = db_baglanti()
-                            conn.execute("DELETE FROM analiz_gecmisi WHERE kullanici_id=?", (kid,))
-                            conn.execute("DELETE FROM kullanicilar WHERE id=?", (kid,))
-                            conn.commit(); conn.close()
-                            st.rerun()
-                st.markdown("<hr style='margin:4px 0;opacity:0.2;'>", unsafe_allow_html=True)
-
-    with adm_tab3:
-        st.subheader("Kullanıcı Analiz Geçmişi")
-        analizler = admin_analizleri_getir()
-        if not analizler:
-            st.info("Henüz analiz yapılmamış.")
-        else:
-            rows = []
-            for a in analizler:
-                tarih, eposta, ad, senaryo, opt_gini, base_gini, iyilesme = a
-                rows.append({
-                    "Tarih": tarih,
-                    "Kullanıcı": f"{ad or ''} ({eposta or 'demo'})",
-                    "Senaryo": senaryo or "—",
-                    "Baseline Gini": f"{base_gini:.4f}" if base_gini else "—",
-                    "Optimal Gini": f"{opt_gini:.4f}" if opt_gini else "—",
-                    "İyileşme": f"%{iyilesme:.2f}" if iyilesme else "—",
-                })
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-
-    st.stop()
-# ── ADMİN PANELİ SONU ────────────────────────────────────────────────────
-
 
 with st.expander("Bu araç hakkında — Amaç, Kapsam ve Kullanım Kılavuzu"):
     st.markdown("""
@@ -1695,9 +1461,10 @@ with tab1:
         for i in range(5):
             aralik = (f"{tam[i]:,.0f} TL ve üzeri" if np.isinf(tam[i+1])
                       else f"{tam[i]:,.0f} – {tam[i+1]:,.0f} TL")
-            rows.append({"Dilim": i+1, "Gelir Aralığı": aralik,
+            rows.append({"Dilim": str(i+1), "Gelir Aralığı": aralik,
                          "Oran": f"%{MEVCUT_ORANLAR[i]*100:.0f}"})
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True,
+                     column_config={"Dilim": st.column_config.TextColumn("Dilim", width="small")})
 
     else:
         if not senaryo:
@@ -1789,32 +1556,31 @@ with tab1:
                 _dilim_mod = "diger"
 
             if _dilim_mod == "sadece_sinir":
+                # Sadece sınırlar: eski ve yeni dilim göster, oran tek kolon
                 for i in range(k):
                     eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if np.isinf(tam_eski[i+1])
-                                   else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL") if i+1 < len(tam_eski) else "—"
+                                   else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL")
                     yeni_aralik = (f"{tam_yeni[i]:,.0f} TL ve üzeri" if np.isinf(tam_yeni[i+1])
                                    else f"{tam_yeni[i]:,.0f} – {tam_yeni[i+1]:,.0f} TL")
                     dilim_rows.append({
-                        "Dilim": i+1,
+                        "Dilim": str(i+1),
                         "Eski Aralik": eski_aralik,
                         "Yeni Aralik": yeni_aralik,
                         "Oran": f"%{opt_oranlar[i]*100:.0f}",
                     })
             else:
+                # Diger: eski dilim + eski oran + yeni dilim + yeni oran + fark
                 for i in range(k):
-                    # Eski aralık: sadece mevcut 5 dilim için, fazlası için — göster
-                    if i+1 < len(tam_eski):
-                        eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if np.isinf(tam_eski[i+1])
-                                       else f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL")
-                    else:
-                        eski_aralik = "—"
+                    eski_aralik = (f"{tam_eski[i]:,.0f} TL ve üzeri" if i < len(ESKI_SINIRLAR)+1 and np.isinf(tam_eski[i+1])
+                                   else (f"{tam_eski[i]:,.0f} – {tam_eski[i+1]:,.0f} TL"
+                                         if i < len(ESKI_SINIRLAR)+1 else "—"))
                     yeni_aralik = (f"{tam_yeni[i]:,.0f} TL ve üzeri" if np.isinf(tam_yeni[i+1])
                                    else f"{tam_yeni[i]:,.0f} – {tam_yeni[i+1]:,.0f} TL")
                     eski_oran = f"%{MEVCUT_ORANLAR[i]*100:.0f}" if i < len(MEVCUT_ORANLAR) else "—"
                     fark = ((opt_oranlar[i] - MEVCUT_ORANLAR[i]) * 100
                             if i < len(MEVCUT_ORANLAR) else 0)
                     dilim_rows.append({
-                        "Dilim": i+1,
+                        "Dilim": str(i+1),
                         "Eski Aralik": eski_aralik,
                         "Eski Oran": eski_oran,
                         "Yeni Aralik": yeni_aralik,
@@ -1823,20 +1589,22 @@ with tab1:
                     })
 
             dilim_df = pd.DataFrame(dilim_rows)
-            st.dataframe(dilim_df, use_container_width=True, hide_index=True)
+            st.dataframe(dilim_df, use_container_width=True, hide_index=True,
+                         column_config={"Dilim": st.column_config.TextColumn("Dilim", width="small")})
 
             st.subheader("Gelir Grubu Etki Analizi")
             etki_rows = []
             for i in range(n):
                 etki_rows.append({
-                    "Grup": f"%{(i+1)*5}",
+                    "Grup": str(i+1),
                     "Hane Geliri": f"{gelir_st_haric[i]:,.0f} TL",
                     "Eski Vergi": f"{baseline_ov[i]:,.0f} TL",
                     "Yeni Vergi": f"{opt_ov[i]:,.0f} TL",
                     "Fark": f"{opt_ov[i]-baseline_ov[i]:+,.0f} TL"
                 })
             etki_df = pd.DataFrame(etki_rows)
-            st.dataframe(etki_df, use_container_width=True, hide_index=True)
+            st.dataframe(etki_df, use_container_width=True, hide_index=True,
+                         column_config={"Grup": st.column_config.TextColumn("Grup", width="small")})
 
         with col_grafik:
             st.subheader("Lorenz Eğrisi")
@@ -1862,7 +1630,7 @@ with tab1:
             st.subheader("Gelir Grubuna Göre Vergi Farkı")
             farklar = opt_ov - baseline_ov
             renkler = ['#2ecc71' if f <= 0 else '#e74c3c' for f in farklar]
-            gruplar = [f"%{(i+1)*5}" for i in range(n)]
+            gruplar = [str(i+1) for i in range(n)]
             fig_bar = go.Figure()
             fig_bar.add_trace(go.Bar(x=gruplar, y=farklar, marker_color=renkler))
             fig_bar.add_hline(y=0, line_dash="dash", line_color="black", line_width=1)
